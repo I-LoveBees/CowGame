@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3464de20171bc65499b1bc32fa15f366, type: 3}
+  m_Name: CameraPointListTestLvl
+  m_EditorClassIdentifier: 
+  vector3DList:
+  - {fileID: 11400000, guid: 83c42c04b8599a24f868866c6be2eb39, type: 2}
+  - {fileID: 11400000, guid: 5857a6c50b99aa646919731eb11a63ac, type: 2}
