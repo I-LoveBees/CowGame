@@ -1,12 +1,14 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5f;        // Player movement speed
-    public float jumpForce = 7f;        // Force applied when jumping
-    public float gravity = -9.81f;      // Gravity applied to the character
+    public float moveSpeed = 5f;
+    public float jumpHeight = 2f;
+    public float gravity = -9.81f;
 
     private CharacterController controller;  // The character controller component
+    private Vector2 moveInput;           // Input vector for movement
     private Vector3 velocity;               // Current velocity of the character
 
     // Awake is called when the script instance is initialized
@@ -15,46 +17,39 @@ public class PlayerController : MonoBehaviour
         // Get the CharacterController component attached to this GameObject
         controller = GetComponent<CharacterController>();
     }
-
-    // Update is called once per frame
+    
     private void Update()
     {
-        // wasd movement
+        //move
+        Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
+        controller.Move(move * (moveSpeed * Time.deltaTime));
+        //jump
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
+    }
 
-        var moveH = Input.GetAxis("Horizontal");
-        var moveV = Input.GetAxis("Vertical");
-        var moveDirection =  new Vector3(moveH, 0f, moveV) * moveSpeed;
-
-        //if shift button is pressed, run at twice the speed move speed is set to
-        if (Input.GetKey(KeyCode.LeftShift))
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        moveInput = context.ReadValue<Vector2>();
+        Debug.Log($"Move Input: {moveInput}");
+    }
+    
+    public void OnJump(InputAction.CallbackContext context)
+    {
+            Debug.Log($"Jumping {context.performed} - Is Grounded: {controller.isGrounded}");
+            if (context.performed && controller.isGrounded)
+            {
+                Debug.Log($"We are jumping rn");
+                velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            }
+    }
+    
+    public void OnAttack(InputAction.CallbackContext context)
+    {
+        if (context.performed)
         {
-            moveDirection = new Vector3(moveH, 0f, 0f) * (moveSpeed * 2);
-        }
-
-        // Apply gravity
-        if (!controller.isGrounded)
-        {
-            velocity.y += gravity * Time.deltaTime;
-        }
-        else
-        {
-            velocity.y = 0;
-        }
-
-        // Jumping
-        if (controller.isGrounded && Input.GetButtonUp("Jump"))
-        {
-            velocity.y = Mathf.Sqrt(jumpForce * -2 * gravity);
-        }
-
-        // Apply movement and gravity
-        var move = moveDirection + velocity;
-        controller.Move(move * Time.deltaTime);
-        
-        // Rotate player to face direction of movement
-        if (moveDirection != Vector3.zero)
-        {
-            transform.forward = moveDirection;
+            Debug.Log("Attack performed");
+            // Implement attack logic here
         }
     }
 }
